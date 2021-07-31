@@ -105,7 +105,6 @@ gc()
 rkn_data <- read_csv(paste0(dir, "data_rkn_wide.gz"))
 
 rkn_data <- rkn_data %>% 
-  mutate(name = gsub("&quot;", "", name)) %>% 
   filter(!grepl("газета", form_spread)) %>% 
   filter(!grepl("программа", form_spread)) %>% 
   filter(!grepl("канал", form_spread))
@@ -130,7 +129,8 @@ rkn_data <- rkn_data %>%
 rkn_data <- rkn_data %>% 
   mutate(founder_id = str_extract(founder, "(?<=founder_id:)[^\\|]+")) %>% 
   mutate(founder_inn = str_extract(founder, "(?<=inn:)\\d+")) %>% 
-  mutate(founder_name = str_extract(founder, "^.+?(?=\\|)")) 
+  mutate(founder_name = str_extract(founder, "^.+?(?=\\|)")) %>% 
+  mutate_at(c("name", "founder_name"), ~gsub("&quot;", "", .x))          
 
 rkn_data <- rkn_data %>% 
   select(-rus_name, -founder, -1) %>% 
